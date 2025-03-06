@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #-*- encoding:utf-8 -*-
-
 import sys
 import re
 import shlex
@@ -36,7 +35,8 @@ def get_cuda_version():
     match = re.search(r'release\s([\d\.]+)',output)
     if match is not None:
         result, = match.groups()
-        result = result.split(".")[0]
+        if float(result)>=11:
+            result = result.split(".")[0]+"x"
         return result
     else:
         return None
@@ -46,10 +46,9 @@ def get_correspond_cupy():
     pkg_name = 'cupy'
     if cuda_version is not None:
         try:
-            current = pkg_resources.get_distribution(pkg_name)
-            installed_version = current.version.split(".")[0]
-            if installed_version == cuda_version and float(installed_version)>=11:
-                return f"cupy-cuda{installed_version}x"
+            current = pkg_resources.get_distribution(
+                'cupy-cuda{}'.format(cuda_version.replace('.',''))
+            )
         except Exception:
             pass
         else:
