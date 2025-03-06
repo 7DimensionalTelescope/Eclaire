@@ -50,6 +50,7 @@ def get_correspond_cupy():
                 'cupy-cuda{}'.format(cuda_version.replace('.',''))
             )
         except Exception:
+            pkg_name = 'cupy-cuda{}'.format(cuda_version.replace('.',''))
             pass
         else:
             pkg_name = current.project_name
