@@ -36,6 +36,7 @@ def get_cuda_version():
     match = re.search(r'release\s([\d\.]+)',output)
     if match is not None:
         result, = match.groups()
+        result = result.split(".")[0]
         return result
     else:
         return None
@@ -45,9 +46,10 @@ def get_correspond_cupy():
     pkg_name = 'cupy'
     if cuda_version is not None:
         try:
-            current = pkg_resources.get_distribution(
-                'cupy-cuda{}'.format(cuda_version.replace('.',''))
-            )
+            current = pkg_resources.get_distribution(pkg_name)
+            installed_version = current.version.split(".")[0]
+            if installed_version == cuda_version and float(installed_version)>=11:
+                return f"cupy-cuda{installed_version}x"
         except Exception:
             pass
         else:
